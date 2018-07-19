@@ -31,7 +31,26 @@ I dati cui si fa riferimento provengono da:
 
 
 
-## Contenuto
+## Contenuto repository
+
+
+## Applicazione
+
+### Sketch Roadmap
+
+#### Landing page
+![alt text](img/landing_page/sketch_landingpge.pdf)
+
+##### Screenshot
+![alt text](img/landing_page/bolle_centraline.png)
+![alt text](img/landing_page/bolle_ordinate.png)
+![alt text](img/landing_page/bolle_radar.png)
+![alt text](img/landing_page/click_bolla.png)
+![alt text](img/landing_page/passaggio_bolla.png)
+
+
+
 
 ## Esecuzione
+
 
