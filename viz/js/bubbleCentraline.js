@@ -27,7 +27,7 @@ function dynamicSort(property) {
     .enter()
     .append("g")
     .attr("class", "overallG")
-    .attr("transform", function (d,i) {return "translate(" + (i * sizeScale(maxSize) * 2) + ", 0)"});
+    .attr("transform", function (d,i) {return "translate(" + (i * sizeScale(maxSize) * 2) + ", 10)"});
 
   var centralina = d3.selectAll("g.overallG");
 
@@ -47,6 +47,7 @@ function dynamicSort(property) {
     .append("text")
     .style("text-anchor", "middle")
     .attr("y", maxSize*2+5)
+    .attr('transform', 'rotate(-45)')
     .style("font-size", "10px")
     .text(function(d) {return d.nome;});
 
