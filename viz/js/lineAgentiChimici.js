@@ -6,28 +6,41 @@ svg_2 = d3.select("#line-container")
 
 d3.csv('data/sample.csv')
   .then(function(data) {
+    console.log(data)
+   xDomain = d3.extent(data, function(d) { return new Date(d.day); })
+   xScale = d3.scaleTime().domain(xDomain).range([20,480]);
 
-  xScale = d3.scaleLinear().domain([1,10.5]).range([20,480]);
    yScale = d3.scaleLinear().domain([0,35]).range([480,20]);
+   var  dateFormat = d3.timeFormat("%b %Y");
 
    var xAxis = d3.axisBottom(xScale)
             .tickSize(4)
-            .tickValues([1,2,3,4,5,6,7,8,9,10]);
+            .tickFormat(dateFormat);
+            //.tickValues([1,2,3,4,5,6,7,8,9,10]);
 
    svg_2.append("g").attr("id", "xAxisG")
-                    .attr("transform", "translate(0,480)")
-                    .call(xAxis);
+                    .attr("transform", "translate(40,480)")
+                    .call(xAxis)
+                    .selectAll("text")
+                    //.attr("y", 0)
+                    //.attr("x", 9)
+                    //.attr("dy", ".35em")
+                    .attr("transform", "rotate(-40)");
+                    //.style("text-anchor", "start")
+                    //.attr('transform', 'rotate(-45)');
 
 
-
-   yAxis = d3.axisRight(yScale)
+   yAxis = d3.axisLeft(yScale)
      .ticks(10)
-     .tickSize(470);
-    svg_2.append("g").attr("id", "yAxisG").call(yAxis);
+     .tickSize(-470);
+    svg_2.append("g")
+         .attr("id", "yAxisG")
+         .call(yAxis);
 
     d3.selectAll('#yAxisG')
       .selectAll('line')
       .style('stroke', 'grey')
+     // .attr("translate(200,0)")
 
     createLinea(data, 'tweets')
     createLinea(data, 'retweets')
@@ -38,7 +51,7 @@ d3.csv('data/sample.csv')
 function createLinea(data, campo){
     var tweetLine = d3.line()
                     .x(function(d) {
-                        return xScale(d.day);
+                        return xScale(new Date(d.day));
                     })
                     .y(function(d) {
                     return yScale(d[campo]);
@@ -63,7 +76,7 @@ function createLinea(data, campo){
      .append("circle")
      .attr("class", "tweets")
      .attr("r", 2.5)
-     .attr("cx", function(d) {return xScale(d.day)})
+     .attr("cx", function(d) {return xScale(new Date(d.day))})
      .attr("cy", function(d) {return yScale(d[campo])})
      .style("fill", "black")
      .on('mouseover', overPoint)
