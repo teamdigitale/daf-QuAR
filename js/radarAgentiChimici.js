@@ -1,10 +1,12 @@
 svg = d3.select("#radar-container")
         .append("svg")
-        .attr('width', '30%')
+        .attr('width', '100%')
         .attr('height', '300px');
 
-var levels = new Array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0.05);
-
+var levels = new Array(10,  8, 6, 4, 2,  0.05);
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 svg.append("g")
    .attr("id", "agentichimici")
@@ -20,8 +22,6 @@ svg.append("g")
    .attr('r', function (d) {return d*13;})
    .style("fill", "transparent")
    .style("stroke", "grey")
-
-
 
 
 lineGenerator = d3.line();
@@ -53,11 +53,26 @@ raggiRadar
     .attr("y", function (d){return d.linea[1][1] > 0 ? d.linea[1][1] + 10 : d.linea[1][1] - 10})
     .attr("x", function (d){return d.linea[1][0] > 0 ? d.linea[1][0] + 20 : d.linea[1][0] - 20})
     .style("font-size", "10px")
-    .text(function(d) {return d.agente;});
+    .text(function(d) {return d.agente.split('_').length == 2 ?  d.agente.split('_')[0] +  d.agente.split('_')[1] :
+                                                                 d.agente.split('_')[0] ;})
+    .on('mouseover', function (d){
+                        div.transition()
+                          .duration(200)
+                          .style("opacity", .9);
 
+                        div	.html(function () {return d.agente.split('_').length == 2 ? '<b> Agente chimico: </b>' + d.agente.split('_')[0] + "<sub>"+ d.agente.split('_')[1]+ "</sub>" + "<br/> <b>Valore medio (u.m.):</b> "  + d.mediaCentraline :
+                                                       '<b> Agente chimico: </b>' + d.agente.split('_')[0] +  "<br/> <b>Valore medio (u.m.):</b> "  + d.mediaCentraline}
 
+                        )
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+                          })
+    .on("mouseout", function(d) {
+            div.transition()
+               .duration(500)
+               .style("opacity", 0);
+        });
 
-//poligonoPunti[agentiChimici.length+1] = new Array(xCoordinate(agentiChimici[0]), yCoordinate(agentiChimici[0]))
 
 
 
@@ -105,9 +120,10 @@ svg.append("g")
    .duration(2000)
    .delay(function(d,i) {return i * 100})
    .attr('d', lineGenerator(definePolygon(agentiChimici, 'tutte')))
-   .style("fill", "orange")
-   .style("opacity", .5)
-   .style("stroke", "orange");
+   .style("fill", "#d95f02")
+   .style("opacity", .6)
+   .style("stroke", "#b36200")
+   .style("stroke-width", "2px");
 
 
 
@@ -129,26 +145,23 @@ puntiRadar
    .append('circle')
    .attr('cx', 0)
    .attr('cy', 0)
-   .attr('r', 2)
+   .attr('r', 1)
    .transition()
    .delay(function(d,i) {return i * 100})
    .duration(2000)
    .attr('cx', function (d) {return xCoordinate(d);})
    .attr('cy', function (d) {return yCoordinate(d);})
-   .style("fill", "red")
-   .style("stroke", "red")
+   .style("fill", "#d95f02")
+   .style("stroke", "#d95f02")
 
 function highlightCentralina(d) {
 
      d3.select(this).select('circle').each(function(p,i) {
       d3.select(this).attr('class') == 'active' ?
-          d3.select(this).classed("active",true).style('fill','blue'):
-          d3.select(this).classed("active",false).style('fill', 'red');
+          d3.select(this).classed("active",true).style('fill','#b2df8a'):
+          d3.select(this).classed("active",false).style('fill', '#a6cee3');
     });
 
-     //d3.selectAll("g.overallG").select("#"+d.nome)
-     //  .style("fill", function(p) {return p.nome == d.nome ? "red" : "pink";})
-     //  ;
 
      svg.append("g")
        .attr("id", "area-centralina")
@@ -161,10 +174,10 @@ function highlightCentralina(d) {
        .delay(function(d,i) {return i * 100})
        .attr('d', lineGenerator(definePolygon(agentiChimici, d.nome)))
        .attr('class', 'areaMomentanea')
-       .style("fill", "pink")
+       .style("fill", "#1f78b4")
        .style("opacity", .6)
-       .style("stroke", "black")
-       .style('stroke-width', 3);
+       .style("stroke", "#1f78b4")
+       .style('stroke-width', 2);
 
      svg.append("g")
         .attr('id', "valori-agente-spec")
@@ -178,101 +191,70 @@ function highlightCentralina(d) {
         .append('circle')
         .attr('cx', 0)
         .attr('cy', 0)
-        .attr('r', 2)
+        .attr('r', 1)
         .attr('class', 'puntiMomentanei')
         .transition()
         .duration(200)
         .attr('cx', function (d) {return xCoordinate(d);})
         .attr('cy', function (d) {return yCoordinate(d);})
-        .style("fill", "red")
-        .style("stroke", "red")
+        .style("fill", "#a6cee3")
+        .style("stroke", "#a6cee3")
 
     };
 
 
 function oldCentralina(d) {
-     //d3.selectAll("g.overallG").select("#"+d.nome)
-     //  .style("fill", function(p) {return this.class == 'active' ? "blue" : 'pink';});
 
     d3.select(this).select('circle').each(function(p,i) {
       d3.select(this).attr('class') == 'active' ?
-          d3.select(this).classed("active",true).style('fill','blue'):
-          d3.select(this).classed("active",false).style('fill', 'pink');
+          d3.select(this).classed("active",true).style('fill','#b2df8a').style("stroke", "#b2df8a"):
+          d3.select(this).classed("active",false).style('fill', '#1f78b4').style("stroke", "#1f78b4");
     })
 
 
     d3.selectAll("g.group-valori-agente-spec").selectAll("circle").each(function(p,i){
         d3.select(this).attr('class') == 'puntiBloccati' ?
-            d3.select(this).style('fill','blue'):
+            d3.select(this).style('fill','#b2df8a').style("stroke", "#b2df8a"):
             d3.select(this).transition().duration(150).remove()
     });
 
     d3.selectAll("g.groupAreaCentralina").select("path").each(function(p,i){
         d3.select(this).attr('class') == 'areaBloccata' ?
-            d3.select(this).style('fill','blue'):
+            d3.select(this).style('fill','#b2df8a').style("stroke", "#b2df8a"):
             d3.select(this).transition().duration(150).remove()
     });
-     //d3.selectAll('g.groupAreaCentralina').select('path')
-     //  .transition()
-     //  .duration(150)
-     //  .remove()
+
     };
 
 function blockCentralina(d) {
     d3.select(this).select('circle').each(function(p,i) {
       d3.select(this).attr('class') != 'active' ?
-          d3.select(this).classed("active",true).style('fill','blue'):
-          d3.select(this).classed("active",true).style('fill', 'blue');
+          d3.select(this).classed("active",true).style('fill','#b2df8a').style("stroke", "#b2df8a"):
+          d3.select(this).classed("active",true).style('fill', '#b2df8a').style("stroke", "#b2df8a");
     })
 
     d3.selectAll('g.groupAreaCentralina').select('path')
        .classed('areaMomentanea', false)
-       .classed('areaBloccata', true).style('fill', 'blue')
+       .classed('areaBloccata', true).style('fill', '#b2df8a').style("stroke", "#b2df8a")
 
     d3.selectAll("g.group-valori-agente-spec").selectAll('circle')
        .classed('puntiMomentanei', false)
-       .classed('puntiBloccati', true).style('fill', 'blue')
+       .classed('puntiBloccati', true).style('fill', '#b2df8a').style("stroke", "#b2df8a")
 
-    //d3.selectAll("g.groupAreaCentralina").select("path").each(function(p,i){
-    //    d3.select(this).attr('class') == 'areaBloccata' && d3.selectAll('g.overallG').select('circle').each(function(t,j){return d3.select(this).attr('class') != 'active'})?
-    //        d3.select(this).classed('areaBloccata', false).transition().duration(150).remove()://style('fill', 'blue'):
-    //        d3.select(this).classed('areaBloccata', true).style('fill','blue')
-    //});
-
-
-
-
-    //d3.selectAll("g.overallG").select("#"+d.nome)
-       //.style("fill", function(p) {return p.nome == d.nome ? "blue" : "pink";})
-    //   .classed('active', true)
-    //   .style('fill', 'blue');
 };
 
 function unblockCentralina(d) {
     d3.select(this).select('circle').each(function(p,i) {
       d3.select(this).attr('class') == 'active' ?
-          d3.select(this).classed("active",false).style('fill','pink'):
-          d3.select(this).classed("active",true).style('fill', 'blue');
+          d3.select(this).classed("active",false).style('fill','#1f78b4'):
+          d3.select(this).classed("active",true).style('fill', '#b2df8a');
     })
 
     d3.selectAll('g.groupAreaCentralina').select('path')
        .classed('areaBloccata', false).transition().duration(150).remove()
-       //.classed('areaBloccata', true).style('fill', 'blue')
+       //.classed('areaBloccata', true).style('fill', '#b2df8a')
 
     d3.selectAll('g.group-valori-agente-spec').selectAll('circle')
        .classed('puntiBloccati', false).transition().duration(150).remove()
 
-    //d3.selectAll("g.groupAreaCentralina").select("path").each(function(p,i){
-    //    d3.select(this).attr('class') == 'areaBloccata' && d3.selectAll('g.overallG').select('circle').each(function(t,j){return d3.select(this).attr('class') != 'active'})?
-    //        d3.select(this).classed('areaBloccata', false).transition().duration(150).remove()://style('fill', 'blue'):
-    //        d3.select(this).classed('areaBloccata', true).style('fill','blue')
-    //});
-
-
-
-
-    //d3.selectAll("g.overallG").select("#"+d.nome)
-       //.style("fill", function(p) {return p.nome == d.nome ? "blue" : "pink";})
-    //   .classed('active', true)
-    //   .style('fill', 'blue');
 };
