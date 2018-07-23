@@ -18,10 +18,13 @@ function dynamicSort(property) {
   var maxSize = d3.max(centraline, function(el) {return el.size});
   var sizeScale = d3.scaleLinear().domain([ 0, maxSize ]).range([ 0, 30 ]);
 
-  d3.select("svg")
+d3.select("#bubble-container")
+  .append("svg")
+
+  .attr('class', 'svg-bubbles')
     .append("g")
     .attr("id", "centraline")
-    .attr("transform", "translate("+window.innerWidth/1.9+","+ window.innerHeight/8+")")
+    .attr("transform", "translate("+'40'+","+ '40' +")")
     .selectAll("g")
     .data(centraline)
     .enter()
@@ -39,9 +42,8 @@ function dynamicSort(property) {
     .delay(function(d,i) {return i * 100})
     .duration(500)
     .attr("r", function (d) {return sizeScale(d.size);})
-    .style("fill", "pink")
-    //.style("stroke", "black")
-    .style("stroke-width", "1px");
+    //.style("fill", "pink")
+    //.style("stroke-width", "1px");
 
   centralina
     .append("text")
@@ -59,18 +61,19 @@ function dynamicSort(property) {
 
 
 
-  var buttonSort = new Array(['Totale agenti chimici']) //centraline.map(a => a.nome);
+  var buttonSort = new Array(['Sì']) //centraline.map(a => a.nome);
 
-  d3.select("#bubble-container")
+  d3.select("#ordina-centraline")
     .selectAll("button.centraline")
     .data(buttonSort)
     .enter()
     .append("button")
+    .attr('id', 'button-ordine')
     .on("click", buttonSorting)
     .html(function(d) {return d;});
 
-  function buttonSorting(datapoint) {
-        var filteredCentraline = centraline.filter(function (p) {return p.nome == datapoint})
+  function buttonSorting() {
+        //var filteredCentraline = centraline.filter(function (p) {return p.nome == datapoint})
         var sorted_centraline = centraline.sort(dynamicSort('size'))
         var sortCentraline = sorted_centraline.map(a => a.nome)
 
