@@ -73,14 +73,15 @@ def download_data(base_url,
     
     return df_final
 
-def convert_date(anno, giorno):
+def convert_date(anno, giorno, ora):
     """Return date instead of day number
     """
     
     inizio_anno = datetime.datetime(int(anno),1,1)
     dtdelta = datetime.timedelta(days=int(giorno)-1)
+    oradelta =  datetime.timedelta(hours=int(ora))
     
-    return inizio_anno + dtdelta
+    return inizio_anno + dtdelta + oradelta
 
 def convert_coordinates(x):
     """Return right coordinate format

@@ -15,8 +15,8 @@ base_url = 'http://www.arpalazio.net/main/aria/sci/annoincorso/chimici/RM/DatiOr
 df_final = update_dati(lista_agenti_chimici, base_url)
 df_final['Date'] = np.vectorize(convert_date)(df_final['Anno'], df_final['Giorno_giuliano'])
 
-old_df = pd.read_csv('data/air_pollution_pregressa.csv', sep='\t')
+old_df = pd.read_csv('data/air_pollution_pregressa.tsv', sep='\t')
 df_update = pd.concat([old_df, df_final])
 df_update.drop_duplicates(subset=list(df_final.columns), inplace=True, keep='last')
 
-df_update.to_csv('data/air_pollution_updated.csv', sep='\t', index=None)
+df_update.to_csv('data/air_pollution_updated.tsv', sep='\t', index=None)
