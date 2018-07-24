@@ -42,11 +42,10 @@ I dati cui si fa riferimento provengono da:
 ![alt text](img/landing_page/sketch_landingpge.pdf)
 
 ##### Screenshot
-![alt text](img/landing_page/bolle_centraline.png)
-![alt text](img/landing_page/bolle_ordinate.png)
-![alt text](img/landing_page/bolle_radar.png)
+![alt text](img/landing_page/dashboard.png)
+![alt text](img/landing_page/tooltip.png)
+![alt text](img/landing_page/centralina_selection.png)
 ![alt text](img/landing_page/click_bolla.png)
-![alt text](img/landing_page/passaggio_bolla.png)
 
 
 
