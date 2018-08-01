@@ -20,11 +20,15 @@ def write_response(response):
     """
     
     text_r = response.text
-    #print (text_r)
- 
+    
+ 	
+ 	# Individal le righe del file
     lines = text_r.strip().split('\n')
-    #print ('len df: ',len(lines))
-        
+
+    
+    """ Crea df dove ogni linea corrisponde ad una riga del df
+     In questa operazione non si ha ancora la divisione per le singole colonne
+     questo dipende dalla response della richiesta"""
     return pd.DataFrame(lines[:], columns=[lines[0]])
 
 def download_data(base_url,
@@ -32,7 +36,9 @@ def download_data(base_url,
                   lista_agenti_chimici):
     """Return the df of air quality in Rome"""
     
+    # Inizializziamo la lista dei df ognuno dei quali corrisponde ad un agente chimico
     lista_df = []
+    
     columns = ['jd', 'h', '2', '3', '5',
                '8', '10', '11', '14', '15',
                '16', '39', '40',
@@ -40,35 +46,57 @@ def download_data(base_url,
                '55', '56', '57', '60', '83', 
                '84', '85', '86', '87', 'Anno',
                'Chimico']
-
+	
+	# Per ogni agente chimico
     for chimico in lista_agenti_chimici:
+    	# Per ogni anno
         for anno in lista_anni:
             print (chimico, anno)
+            
+            # Esegui la richiesta
             r = requests.get(compose_url(base_url, anno, chimico))
-            #print (compose_url(base_url, anno, chimico))
+            # Crea il rispettivo dataframe
             df = write_response(r)
-
+			
+			# Prendi la linea che corrisponde all'header del df
             columns_ = df.iloc[0].index[0]
+            
+            """ Individua i nomi delle colonne splittando la stringa che li contiene tutti
+            ed escludendo lestringhe vuote ottenute tramite lo split"""
             clean_columns = [item.strip()\
                              for item in columns_.split(' ')\
                              if len(item)!=0]
-            #cols = clean_columns + new_columns
-
+            
+			
             list_rows = []
+            # Per ogni linea del df
             for line_idx in range(1, len(df)):
+            	# determino il numero delle colonne mancanti (variazioni centraline)
                 scarto_cols = len(columns)-len(clean_columns)-2
-     
+     			
+     			""" Come nel caso precedente splitto la linea per ottenere
+     			 le diverse celle"""
                 line = df.iloc[line_idx].values[0].strip().split(' ')
+                
+                # Quindi ottengo la lista delle celle della riga i-th
                 raw_line = [item for item in line if len(item)!=0] 
+                
+                # Se il numero di celle corrisponde al numero di colonne (si hanno tutte le centraline)
                 if len(raw_line) == len(columns)-2:
+                	# Aggiungiamo le colonne anno e agente
                     list_rows += [raw_line + [anno, chimico]]
                 else:
+                	""" Altrimenti riempiamo le celle macanti con 'Centralina non esistente'
+                	e poi aggiungiamo le collonne anno e agente chimico"""
                     raw_line += ['Centralina non esistente']*(scarto_cols)
                     list_rows += [raw_line + [anno, chimico]]
-
+			
+			# Definiamo il nuovo dataset 
             df_idx = pd.DataFrame(list_rows, columns=columns)
+            
+            # Creiamo aggiungiamo alla lista di df da concatenare quello appena creato 
             lista_df += [df_idx]
-
+	# Facciamo la union dei df (concat con pandas)
     df_final = pd.concat(lista_df, ignore_index=True)
     
     return df_final
@@ -108,6 +136,8 @@ def update_dati(lista_agenti_chimici, base_url):
                'Anno', 'Chimico']
     anno = str(datetime.datetime.now().year)
     
+    """I commenti di questa sezione sono gli stessi della precedente. 
+    @TODO: scrivere unica funzione (lo farò quando torno)"""
     for chimico in lista_agenti_chimici:
         print (chimico)
         r = requests.get(compose_url(base_url, anno, chimico))

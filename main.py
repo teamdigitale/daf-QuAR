@@ -15,9 +15,11 @@ base_url = 'http://www.arpalazio.net/main/aria/sci/annoincorso/chimici/RM/DatiOr
 df_final = download_data(base_url,
                   lista_anni,
                   lista_agenti_chimici)
+                  
+# Creare nuova colonna date che specifica anno, giorno e ora
 df_final['Date'] = np.vectorize(convert_date)(df_final['Anno'], df_final['jd'], df_final['h'])
 
-
+# Rinomina le colonne
 df_final.rename(inplace=True,index=str, columns={"jd": "Giorno_giuliano", 
                                                  "h": "Ora",
                                                  "2": 'Centralina_2',
@@ -47,4 +49,4 @@ df_final.rename(inplace=True,index=str, columns={"jd": "Giorno_giuliano",
                                                  '87': 'Centralina_87'
                                                    })
 
-df_final.to_csv('data/air_pollution_pregressa.csv', sep='\t', index=None)
+df_final.to_csv('data/air_pollution_pregressa.tsv', sep='\t', index=None)
