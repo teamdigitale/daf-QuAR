@@ -1,4 +1,68 @@
-function dynamicSort(property) {
+d3.tsv("data/air_pollution_pregressa.tsv").then(function(data)  {
+
+    centraline = getBubbleSize(data, '2018')
+
+    var maxSize = d3.max(centraline, function(el) {return el.size});
+    var sizeScale = d3.scaleLinear().domain([ 0, maxSize ]).range([ 0, 13.5 ]);
+
+    d3.select("#bubble-container")
+      .append("svg")
+
+      .attr('class', 'svg-bubbles')
+        .append("g")
+        .attr("id", "centraline")
+        .attr("transform", "translate("+'40'+","+ '40' +")")
+        .selectAll("g")
+        .data(centraline)
+        .enter()
+        .append("g")
+        .attr("class", "overallG")
+        .attr("transform", function (d,i) {return "translate(" + (i * sizeScale(maxSize) * 2) + ", 10)"});
+
+      var centralina = d3.selectAll("g.overallG");
+
+      centralina
+        .append("circle")
+        .attr("r", 0)
+        .attr('id', function(d) {return d.nome})
+        .transition()
+        .delay(function(d,i) {return i * 100})
+        .duration(500)
+        .attr("r", function (d) {return sizeScale(d.size);})
+        //.style("fill", "pink")
+        //.style("stroke-width", "1px");
+
+      centralina
+        .append("text")
+        .style("text-anchor", "middle")
+        .attr("y", sizeScale(maxSize))
+        .attr('x', sizeScale(maxSize)*2)
+        .attr('transform', 'rotate(40)')
+        .style("font-size", "6px")
+        .text(function(d) {return d.nome;});
+
+
+      centralina.on("mouseover", highlightCentralina);
+      centralina.on("mouseout", oldCentralina);
+      centralina.on("click", blockCentralina);
+      centralina.on("dblclick", unblockCentralina)
+
+
+
+      var buttonSort = new Array(['Sì']) //centraline.map(a => a.nome);
+
+      d3.select("#ordina-centraline")
+        .selectAll("button.centraline")
+        .data(buttonSort)
+        .enter()
+        .append("button")
+        .attr('id', 'button-ordine')
+        .on("click", buttonSorting)
+        .html(function(d) {return d;});
+
+
+
+    function dynamicSort(property) {
                 var sortOrder = 1;
                 if(property[0] === "-") {
                     sortOrder = -1;
@@ -9,68 +73,6 @@ function dynamicSort(property) {
                     return result * sortOrder;
                 }
                 }
-  var centraline = [{'nome':'A', 'size':10, 'CO2': 2}, {'nome':'B', 'size':5, 'CO2': 2},
-                    {'nome':'C', 'size':8, 'CO2': 4}, {'nome':'D', 'size':12.4, 'CO2': 5},
-                    {'nome':'E', 'size':13, 'CO2': 1}, {'nome':'F', 'size':15, 'CO2': 3},
-                    {'nome':'G', 'size':13, 'CO2': 6}, {'nome':'H', 'size':18, 'CO2': 12},
-                    {'nome':'I', 'size':5.3, 'CO2': 13}]
-
-  var maxSize = d3.max(centraline, function(el) {return el.size});
-  var sizeScale = d3.scaleLinear().domain([ 0, maxSize ]).range([ 0, 30 ]);
-
-d3.select("#bubble-container")
-  .append("svg")
-
-  .attr('class', 'svg-bubbles')
-    .append("g")
-    .attr("id", "centraline")
-    .attr("transform", "translate("+'40'+","+ '40' +")")
-    .selectAll("g")
-    .data(centraline)
-    .enter()
-    .append("g")
-    .attr("class", "overallG")
-    .attr("transform", function (d,i) {return "translate(" + (i * sizeScale(maxSize) * 2) + ", 10)"});
-
-  var centralina = d3.selectAll("g.overallG");
-
-  centralina
-    .append("circle")
-    .attr("r", 0)
-    .attr('id', function(d) {return d.nome})
-    .transition()
-    .delay(function(d,i) {return i * 100})
-    .duration(500)
-    .attr("r", function (d) {return sizeScale(d.size);})
-    //.style("fill", "pink")
-    //.style("stroke-width", "1px");
-
-  centralina
-    .append("text")
-    .style("text-anchor", "middle")
-    .attr("y", maxSize*2+5)
-    .attr('transform', 'rotate(-45)')
-    .style("font-size", "10px")
-    .text(function(d) {return d.nome;});
-
-
-  centralina.on("mouseover", highlightCentralina);
-  centralina.on("mouseout", oldCentralina);
-  centralina.on("click", blockCentralina);
-  centralina.on("dblclick", unblockCentralina)
-
-
-
-  var buttonSort = new Array(['Sì']) //centraline.map(a => a.nome);
-
-  d3.select("#ordina-centraline")
-    .selectAll("button.centraline")
-    .data(buttonSort)
-    .enter()
-    .append("button")
-    .attr('id', 'button-ordine')
-    .on("click", buttonSorting)
-    .html(function(d) {return d;});
 
   function buttonSorting() {
         //var filteredCentraline = centraline.filter(function (p) {return p.nome == datapoint})
@@ -86,3 +88,13 @@ d3.select("#bubble-container")
                 function (d,i) {
                         return "translate(" + (sortCentraline.indexOf(d.nome) * sizeScale(maxSize) * 2) + ", 0)"});
      };
+
+
+
+});
+
+
+
+
+
+

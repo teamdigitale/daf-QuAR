@@ -1,3 +1,12 @@
+d3.tsv("data/air_pollution_pregressa.tsv").then(function(data)  {
+        getValoriCentraline(data, '2018')
+
+        finalValoriChimici(agentiChimici, dayChimicoFinal)
+})
+
+
+
+
 svg = d3.select("#radar-container")
         .append("svg")
         .attr('width', '100%')
