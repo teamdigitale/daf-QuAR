@@ -15,6 +15,7 @@ base_url = 'http://www.arpalazio.net/main/aria/sci/annoincorso/chimici/RM/DatiOr
 df_final = download_data(base_url,
                   lista_anni,
                   lista_agenti_chimici)
+# Applica alla
 df_final['Date'] = np.vectorize(convert_date)(df_final['Anno'], df_final['jd'])
 
 
