@@ -1,19 +1,53 @@
 import pandas as pd
 import numpy as np
+import argparse
+import os
 
 from src.utils import download_data,\
-                     convert_date
+                     convert_date,\
+                     sftp_upload
     
-    
-lista_anni = ['2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010', 
-              '2009', '2008', '2007', '2006', '2005', '2004', '2003', '2002', '2001', '2000', 
-              '1999']
-lista_inquinanti = ['BENZENE', 'CO', 'NO2', 'NOX', 'NO', 'O3', 'PM10', 'PM2.5', 'SO2']
+# gestione argomenti a riga di comando
+parser = argparse.ArgumentParser(description='Process ARPA Lazio air pollution data for ROMA')
+parser.add_argument('--dest_folder',
+                    help='destination folder for downloaded data (default: ./data)',
+                    default='./data',
+                    required=False)
+parser.add_argument('--type',
+                    help="""current | historical. If current, calls the web service for current year, 
+                            otherwise calls the historical web service (default: current)""",
+                    default='current',
+                    choices=['current','historical'],
+                    required=False)
+parser.add_argument('--year',
+                    help="""downloads data for the passed year (default: current year)""",
+                    type=int,
+                    required=False)
+args = parser.parse_args()
 
 base_url_anno_corrente = 'http://www.arpalazio.net/main/aria/sci/annoincorso/chimici/RM/DatiOrari/RM_'
 base_url_storico = 'http://www.arpalazio.net/main/aria/sci/basedati/chimici/BDchimici/RM/DatiOrari/RM_'
 
-df_final = download_data(base_url_storico, lista_anni, lista_inquinanti)
+# determino base url e anno/i sulla base di quanto indicato a riga di comando
+if args.type == 'current':
+    base_url = base_url_anno_corrente
+    if args.year is not None:
+        lista_anni = [str(args.year)]
+    else:
+        lista_anni = [str(pd.to_datetime(pd.Timestamp.now()).date().year)]
+else:
+    base_url = base_url_storico
+    if args.year is not None:
+        lista_anni = [args.year]
+    else:
+        lista_anni = ['2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010', 
+                        '2009', '2008', '2007', '2006', '2005', '2004', '2003', '2002', '2001', '2000', 
+                        '1999']
+
+lista_inquinanti = ['BENZENE', 'CO', 'NO2', 'NOX', 'NO', 'O3', 'PM10', 'PM2.5', 'SO2']
+
+#df_final = download_data(base_url_storico, lista_anni, lista_inquinanti)
+df_final = download_data(base_url, lista_anni, lista_inquinanti)
                   
 # Aggiungo una nuova colonna data_ora che normalizza anno, giorno e ora
 df_final['data_ora'] = np.vectorize(convert_date)(df_final['Anno'], df_final['jd'], df_final['h'])
@@ -56,8 +90,15 @@ df_final.rename(inplace=True,index=str, columns={"jd": "Giorno_giuliano",
 
 print('Download completed. Exporting to csv')
 
-csv_filename = 'data/air_pollution_pregressa_{}.csv'.format(int(pd.Timestamp.timestamp(pd.Timestamp.now())))
+csv_filename = args.dest_folder + '/air_pollution_{}.csv'.format(int(pd.Timestamp.timestamp(pd.Timestamp.now())))
 df_final.to_csv(csv_filename, sep='\t', index=None)
 print('csv file created: {}'.format(csv_filename))
 
-# TODO: upload to sftp
+# upload to sftp
+sftp_host = os.environ['sftp_host']
+sftp_user = os.environ['sftp_user']
+sftp_key_file = os.environ['sftp_key_file']
+sftp_folder = os.environ['sftp_folder']
+sftp_upload(sftp_host, sftp_user, sftp_key_file, csv_filename, sftp_folder)
+
+os.remove(csv_filename)

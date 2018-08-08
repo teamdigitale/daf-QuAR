@@ -3,6 +3,8 @@ import requests
 import datetime
 import numpy as np
 import pandas as pd
+import pysftp
+import os
 
 
 def compose_url(base_url, anno, chimico):
@@ -116,3 +118,16 @@ def update_dati(lista_inquinanti, base_url):
     
     anno = str(datetime.datetime.now().year)
     return download_data(base_url, [anno], lista_inquinanti)
+
+def sftp_upload(sftp_host, sftp_user, sftp_key_file, localpath, remotepath):
+        cnopts = pysftp.CnOpts()
+        cnopts.hostkeys = None
+        cnopts.compression = True
+        with pysftp.Connection( host=sftp_host, 
+                                username=sftp_user, 
+                                private_key=sftp_key_file, 
+                                cnopts=cnopts) as sftp:
+            folder, filename = os.path.split(localpath)
+            rpath = remotepath.strip() + filename
+            sftp.put(localpath=localpath, remotepath=rpath, preserve_mtime=False, confirm=True)
+            print('File uploaded to SFTP in {}'.format(rpath))
