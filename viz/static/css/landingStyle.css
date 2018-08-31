@@ -1,0 +1,121 @@
+/* General information */
+:root {
+    --main-txt-color: #4f4747;
+}
+
+@font-face {
+    font-family: FontBold;
+    src: url('fonts/NotoSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: FontRegular;
+    src: url('fonts/NotoSans-Regular.ttf') format('truetype');
+}
+
+body {
+    background-color: #c0c5ce;
+}
+
+a {
+    color: var(--main-txt-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.contenitore {
+    background-color: #800000;
+    opacity: 0.5;
+    width: 150px;
+    height: 150px;
+    transform: rotate(20deg);
+    transition-property: transform;
+    transition-duration: 10s;
+    position: absolute;
+    top: 30%;
+    left: 45%;
+}
+
+.contenitore:hover {
+    background-color: #a7adba;
+    opacity: 0.5;
+    width: 150px;
+    height: 150px;
+    transform: rotate(360deg);
+    transition-property: transform;
+    transition-duration: 10s;
+    position: absolute;
+    top: 30%;
+    left: 45%;
+}
+
+.title {
+    position: absolute;
+    top: 34%;
+    left: 45%;
+    font-family: FontBold;
+    font-size: 20px;
+    color: var(--main-txt-color);
+       }
+
+.title::first-letter {
+    color: #f09b1a;
+    font-size: 24px;
+}
+
+.subtitle {
+    font-family: FontRegular;
+    position: absolute;
+    top: 38%;
+    left: 46%;
+    font-size: 10px;
+    text-align: right;
+    color: var(--main-txt-color);
+       } 
+
+.options {   
+    font-family: FontRegular;
+    top: 55%;
+    left: 39%;
+}
+
+.right-opt {
+    left: 56%;
+}
+
+.footer {
+    position: fixed;
+    bottom: 12px;
+    right: 130px;
+    font-family: FontRegular;
+    font-size: 12px;
+    color: var(--main-txt-color);
+}
+
+.footer::first-letter {
+    font-family: FontBold;
+    color: #f09b1a;
+    font-size: 16px;
+}
+
+.logo {
+    position: fixed;   
+}
+
+.roma {
+    width: 90px;
+    height: 40px;
+    bottom: 2px;
+    right: 50px;
+}
+
+.teamdigitale {
+    width: 30px;
+    height: 30px; 
+    bottom: 5px;
+    right: 30px;
+}

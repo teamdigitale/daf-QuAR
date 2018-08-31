@@ -2,13 +2,15 @@
 <html>
    <script src="https://d3js.org/d3.v5.min.js"></script>
 
-   <link type="text/css" rel="stylesheet" href="static/css/style.css" />
+   <link type="text/css" rel="stylesheet" href="css/style.css" />
 
 <body>
 	<div id="header-style">
 
 
 		<p id="nav">
+			<a class='home' id="how" href="/">home</a>
+			 |
 			<a id="how" href="#loginScreen">utilizzo</a>
 			 |
 			<a id="how" href="#aggiornamentiScreen">aggiornamenti</a>
@@ -120,15 +122,15 @@
 					Selezionare l'anno di interesse:
 				</span>
 
-				<form action="/home" method="post" class="selezAnno">
-					<select name="selAnno" class="selezAnno">
+				<form action="/viz-tempo" method="post" class="formAnno">
+					<select name="selAnno" class="formAnno">
 						<option value="2014">2014</option>
 						<option value="2015">2015</option>
 						<option value="2016">2016</option>
 						<option value="2017">2017</option>
 						<option value="2018" selected>2018</option>
 					</select>
-					<input type="submit" value="Scegli" class="selezAnno">
+					<input type="submit" value="Scegli" class="formAnno submission">
 				</form>
 
 			</div>

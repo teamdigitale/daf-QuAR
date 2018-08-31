@@ -98,3 +98,27 @@ def radar_data(df_selected, agenti, anno, lista_centraline):
 
 
 	return nome_file
+
+
+def linee_data(df_selected, anno):
+
+
+	df_selected['data_mese'] = df_selected.Date.apply(
+		lambda x: x[:-11] + '01')
+	sub_df = df_selected.groupby(['Chimico', 'data_mese']).sum()
+
+	df_linee = pd.DataFrame()
+	df_linee['day'] = sub_df.index.levels[1]
+
+	medie_mensili = sub_df[sub_df.columns[2:-1]].mean(axis=1)
+	for inquinante in list(sub_df.index.levels[0]):
+		df_linee[inquinante] = medie_mensili[inquinante].values
+
+	nome_file = 'data/linee' + str(anno) + '.csv'
+	df_linee.to_csv('static/data/' + nome_file, sep=',', index=None)
+
+	with open('static/data/file_linee_' + str(anno) + '.js', 'w') as f:
+		f.write('var nome_file = ')
+		f.write('../' + nome_file)
+
+	return nome_file

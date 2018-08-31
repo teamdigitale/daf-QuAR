@@ -19,6 +19,17 @@ body {margin: 0px;
 
 }
 
+.formAnno {
+    position: fixed;
+    top:165px;
+    left: 250px;
+}
+
+.submission {
+    left: 330px;
+    border-radius: 2px;
+}
+
 /* Navigation */
 #nav {
     color: #bdbdbd;
@@ -36,6 +47,12 @@ a {
 
 a:hover {
     text-decoration: underline;
+    cursor: help;
+}
+
+a.home:hover{
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 #header-style p a {
@@ -357,7 +374,7 @@ div.tooltip {
 #legend-container {
     width: 100px;
     position: absolute;
-    top: 200px;
+    top: 150px;
     left: 550px; /* che è la larghezza del primo elemento */
     margin-top: 40px;
     margin-left: 20px;

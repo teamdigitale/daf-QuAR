@@ -1,55 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
-
-    body {background-color: black}
-.subunit {fill: #f2f2f2;
-          stroke: white;}}
-.subunit.mouseon {fill: blue;}
-    
-.stazione {fill: orange;}
-.stazione-label {fill: red;}
-.d3-tip
-{
-	line-height: 1;
-	font-weight: bold;
-	padding: 12px;
-	background: rgba(255, 255, 255, 0.8);
-  color: black;
-	border-radius: 2px;
-}
-
-.d3-tip:after
-{
-	box-sizing: border-box;
-	display: inline;
-	font-size: 10px;
-	width: 100%;
-	line-height: 1;
-	color: rgba(255, 255, 255, 0.8);
-	content: "\25BC";
-	position: absolute;
-	text-align: center;
-    font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.d3-tip.n:after
-{
-	margin: -1px 0 0 0;
-	top: 100%;
-	left: 0;
-    font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.tip-text {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 6px;}
-text {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 10px;
-    pointer-events:none;
-    }
-
-</style>
+<html>
+    <link type="text/css" rel="stylesheet" href="style.css" />
 <body>
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="//d3js.org/topojson.v1.min.js"></script>
@@ -57,23 +9,24 @@ text {
 <script>
 
 /* JavaScript goes here. */
-var width = 900,
-    height = 1100;
+var width = 800,
+    height = 800;
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);    
     
     
-d3.json("output.json", function(error, roma) {
+d3.json("output_3_layers.json", function(error, roma) {
   if (error) return console.error(error);
   console.log(roma);
   var subunits = topojson.feature(roma, roma.objects.circoscrizioni);
+  var italia = topojson.feature(roma, roma.objects.italy);
     
     
   var center = d3.geo.centroid(subunits)
   console.log(center)
-  var scale  = 1;
+  var scale  = 2;
   var offset = [width/2, height/2];
   var projection = d3.geo.mercator().scale(scale)
                                     .center(center)
@@ -85,8 +38,8 @@ d3.json("output.json", function(error, roma) {
   // these to determine better values for the scale and translation
   var bounds  = path.bounds(subunits);
   console.log(subunits)
-  var hscale  = scale*width/2  / (bounds[1][0] - bounds[0][0]);
-  var vscale  = scale*height/2 / (bounds[1][1] - bounds[0][1]);
+  var hscale  = scale*width/5  / (bounds[1][0] - bounds[0][0]);
+  var vscale  = scale*height/5 / (bounds[1][1] - bounds[0][1]);
   var scale   = (hscale < vscale) ? hscale : vscale;
   var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
                     height - (bounds[0][1] + bounds[1][1])/2];    
@@ -95,6 +48,16 @@ d3.json("output.json", function(error, roma) {
     .scale(scale).translate(offset);
   path = path.projection(projection);
   
+  
+  svg.selectAll(".italy")
+     .data(italia.features)
+     .enter().append("path")
+     .attr("class", function(d) { return "regione " + d.properties.DEN_REG; })
+     .attr("d", path);
+    // .on('mouseover', function (d) {d3.select(this)
+    //                                   .attr('class', 'italy mouseon');})
+    // .on('mouseout', function (d) {d3.select(this)
+    //                                 .attr('class', "italy " + d.properties.DEN_REG);});
     
   svg.selectAll(".subunit")
      .data(subunits.features)
@@ -181,12 +144,11 @@ d3.json("output.json", function(error, roma) {
     .attr("dy", ".65em")
     .attr("dx", ".65em")
     .text(function(d) { return d.properties.DEN_CIRCOS; });
-    
-    
-  
 });
     
   
     
 
 </script>
+</body>
+</html>    

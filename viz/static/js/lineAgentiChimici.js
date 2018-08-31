@@ -5,7 +5,7 @@ svg_2 = d3.select("#line-container")
 
 lenX = 500
 lenY = 270
-color = [ "#7fcdbb", "#41b6c4", "#1d91c0"]
+color = ["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond"]//[ "#7fcdbb", "#41b6c4", "#1d91c0"]
 
 function dataArray(data) {
     arr = new Array()
@@ -17,22 +17,25 @@ function dataArray(data) {
 function retweetArray_(data) {
     arr = new Array()
     for (i = 0; i < data.length; i++){
-        arr[i] = parseInt(data[i].retweets)
+        arr[i] = parseInt(data[i].NOX)
     }
     return arr
 }
 
 
 
-d3.csv('static/data/sample.csv')
+d3.csv('data/prova_linee.csv')
   .then(function(data) {
    var dateArray = dataArray(data)
    var retweetArray = retweetArray_(data)
+   print(retweetArray)
 
    xDomain = d3.extent(data, function(d) {return new Date(d.day); })
    xScale = d3.scaleTime().domain(xDomain).range([20,lenX]);
 
    yScale = d3.scaleLinear().domain([0,Math.max.apply(null, retweetArray)]).range([lenY,20]);
+   //var yScale = d3.scaleLog().domain([ 1, yScale_(101000)]).range([lenY,20]);
+   //yScale = d3.scaleLinear().domain([0,Math.max.apply(null, retweetArray)]).range([lenY,20]);
 
    var  dateFormat = d3.timeFormat("%b %Y");
    var xAxis = d3.axisBottom(xScale)
@@ -62,10 +65,10 @@ d3.csv('static/data/sample.csv')
 
   width = 100;
   height = 270;
-  legendVals = ['tweets', 'retweets', 'favorites']
+  legendVals = ['BENZENE', 'CO', 'NO', 'NO2', 'NOX', 'O3', 'PM10', 'PM25', 'SO2']
   var legendVals1 = d3.scaleOrdinal()
                       .domain(legendVals)
-                      .range(["#1F77B4", "#FF7F0E", "#2CA02C"]);
+                      .range(["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond"]);
 
   //var color = d3.scaleOrdinal(d3.schemeCategory10)
 
@@ -125,14 +128,34 @@ d3.csv('static/data/sample.csv')
         .style("text-anchor", "start")
         .style("font-size", 10)
 
-  var arrayCampi = ['tweets', 'retweets', 'favorites']
-  createLinea(data, 'tweets', color[0])
-  createLinea(data, 'retweets', color[1])
-  createLinea(data, 'favorites', color[2])
+  var arrayCampi = ['BENZENE', 'CO', 'NO', 'NO2', 'NOX', 'O3', 'PM10', 'PM25', 'SO2']
+
+  createLinea(data, arrayCampi[0], color[0])
+  createLinea(data, arrayCampi[1], color[1])
+  createLinea(data, arrayCampi[2], color[2])
+  createLinea(data, arrayCampi[3], color[3])
+  createLinea(data, arrayCampi[4], color[4])
+  createLinea(data, arrayCampi[5], color[5])
+  createLinea(data, arrayCampi[6], color[6])
+  createLinea(data, arrayCampi[7], color[7])
+  createLinea(data, arrayCampi[8], color[8])
+  /*for (i = 0; i < arrayCampi.length; i++){
+        createLinea(data, arrayCampi[i], color[i])
+    }*/
+
 })
 
 
 function createLinea(data, campo, colore){
+   var dateArray = dataArray(data)
+   var retweetArray = retweetArray_(data)
+
+   xDomain = d3.extent(data, function(d) {return new Date(d.day); })
+   xScale = d3.scaleTime().domain(xDomain).range([20,lenX]);
+
+   yScale = d3.scaleLinear().domain([0,Math.max.apply(null, retweetArray)]).range([lenY,20]);
+   //var yScale = d3.scaleLog().domain([ 1, yScale_(101000)]).range([lenY,20]);
+
     var tweetLine = d3.line()
                     .x(function(d) {return xScale(new Date(d.day));})
                     .y(function(d) {return yScale(d[campo]);});

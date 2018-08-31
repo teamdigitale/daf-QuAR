@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    
+
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <link type="text/css" rel="stylesheet" href="css/mappaStyle.css" />
+
+<body>
+	<div id="header-style">
+
+
+		<p id="nav">
+            <a id="how" href="/">home</a>
+			 |
+			<a id="how" href="#loginScreen">utilizzo</a>
+			 |
+			<a id="how" href="#aggiornamentiScreen">aggiornamenti</a>
+			 |
+			<a id="how" href="#datiScreen">dati</a>
+			 |
+			<a id="how" href="#sourceScreen">source</a>
+			 |
+			<a id="how" href="#creditsScreen">credits</a>
+		</p>
+
+		<h1 id="main-title">QUALITÀ DELL'ARIA A <span id="citta">ROMA</span> 0.1</h1>
+		<h2 id="main-subtitle"> controllo giornaliero della qualità dell'aria </h2>
+
+		<div id="loginScreen">
+			<div id="loginScreen-header">
+				<span id="loginScreen-title">UTILIZZO: NAVIGARE L'APPLICAZIONE</span>
+			</div>
+			<div id="loginScreen-content">
+				<span id="loginScreen-spiegazione"> Contenuto della dashboard </span>
+			</div>
+			<a href="#" class="cancel">&times;</a>
+		</div>
+		<div id="cover"></div>
+
+		<div id="aggiornamentiScreen">
+			<div id="loginScreen-header">
+				<span id="loginScreen-title">AGGIORNAMENTI</span>
+			</div>
+			<div id="loginScreen-content">
+				<span id="loginScreen-spiegazione"> I dati mostrati in questa applicazione sono aggiornati
+				con con cadenza giornaliera.</span>
+					<br/>
+					<br/>
+				<span id="loginScreen-spiegazione">
+				La visualizzazione viene aggiornata dipendentemente dalle Issue o
+					Pull Request presentate sulla repository GitHub del progetto.</span>
+					<br/>
+					<br/>
+				<span id="loginScreen-spiegazione">
+				Ogni cittadino è libero di richiedere una modifica o di/a proporne una.
+					Questa verrà valutata poi dallo staff.
+				</span>
+			</div>
+			<a href="#" class="cancel">&times;</a>
+		</div>
+		<div id="cover"></div>
+
+		<div id="datiScreen">
+			<div id="loginScreen-header">
+				<span id="loginScreen-title">DATI: DESCRIZIONE E FONTI</span>
+			</div>
+			<div id="loginScreen-content">
+				<span id="loginScreen-spiegazione"> I dati cui si fa riferimento provengono da:
+				<br/>
+
+					<ul>
+						<li><b>ARPA Lazio:</b> Per ogni agente chimico mette a disposizione
+							la serie storica giornaliera.</li>
+						<li><b>Open Data della Regione Lazio:</b> Mette a disposizione un dataset che geolocalizza le
+							stazioni da cui sono fatte le rilevazioni. Mancano le ultime inserite a seguito dell'ultimo
+							aggiornamento del dataset.
+							Sono stati aggiunti manualmente in accordo con la documentazione dei dati ARPA Lazio.</li>
+						<li><b>Open Data Roma Capitale:</b> Limiti imposti dalla legge
+							[inserire decreti legge] per la concentrazione
+							di agenti chimici nell'aria.</li>
+
+					</ul>
+
+				</span>
+			</div>
+			<a href="#" class="cancel">&times;</a>
+		</div>
+		<div id="cover"></div>
+
+		<div id="sourceScreen">
+			<div id="loginScreen-header">
+				<span id="loginScreen-title">SOURCE: CODICE SORGENTE</span>
+			</div>
+			<div id="loginScreen-content">
+				<span id="loginScreen-spiegazione"> Contenuto della dashboard </span>
+			</div>
+			<a href="#" class="cancel">&times;</a>
+		</div>
+		<div id="cover"></div>
+
+		<div id="creditsScreen">
+			<div id="loginScreen-header">
+				<span id="loginScreen-title">CREDITS</span>
+			</div>
+			<div id="loginScreen-content">
+				<span id="loginScreen-spiegazione"> L'applicazione è stata
+					sviluppata dal Team per la Trasformazione Digitale.</span>
+			</div>
+			<a href="#" class="cancel">&times;</a>
+		</div>
+		<div id="cover"></div>
+	</div>
+
+    
+<script>
+
+/* JavaScript goes here. */
+var width = 1400;
+var height = 600;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);    
+    
+    
+d3.json("output-topo.json", function(error, roma) {
+  if (error) return console.error(error);
+  console.log(roma);
+  var subunits = topojson.feature(roma, roma.objects.circoscrizioni);
+  var italia = topojson.feature(roma, roma.objects.italy);
+    
+    
+  var center = d3.geo.centroid(subunits)
+  console.log(center)
+  var scale  = 2;
+  var offset = [width/2, height/2];
+  var projection = d3.geo.mercator().scale(scale)
+                                    .center(center)
+                                    .translate(offset);
+  // create the path
+  var path = d3.geo.path().projection(projection);
+  
+  // using the path determine the bounds of the current map and use 
+  // these to determine better values for the scale and translation
+  var bounds  = path.bounds(subunits);
+  console.log(subunits)
+  var hscale  = scale*width/2  / (bounds[1][0] - bounds[0][0]);
+  var vscale  = scale*height/2 / (bounds[1][1] - bounds[0][1]);
+  var scale   = (hscale < vscale) ? hscale : vscale;
+  var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
+                    height - (bounds[0][1] + bounds[1][1])/2];    
+  // new projection
+  projection = d3.geo.mercator().center(center)
+    .scale(scale).translate(offset);
+  path = path.projection(projection);
+  
+  
+  svg.selectAll(".italy")
+     .data(italia.features)
+     .enter().append("path")
+     .attr("class", function(d) { return "regione " + d.properties.DEN_REG; })
+     .attr("d", path);
+    // .on('mouseover', function (d) {d3.select(this)
+    //                                   .attr('class', 'italy mouseon');})
+    // .on('mouseout', function (d) {d3.select(this)
+    //                                 .attr('class', "italy " + d.properties.DEN_REG);});
+    
+  svg.selectAll(".subunit")
+     .data(subunits.features)
+     .enter().append("path")
+     .attr("class", function(d) { return "subunit " + d.properties.COD_CIRCOS; })
+     .attr("d", path)
+     .on('mouseover', function (d) {d3.select(this)
+                                       .attr('class', 'subunit mouseon');})
+     .on('mouseout', function (d) {d3.select(this)
+                                     .attr('class', "subunit " + d.properties.COD_CIRCOS);});
+
+    
+  var tip = d3.tip()
+			.attr("class", "d3-tip")
+			.offset([-60, -400])
+    	    .html(function(d)
+			{ return "<div class='tip-text'>Stazione: " + d.properties.Nome + "<br><br>"
+                        + "La stazione è di tipologia: "+ d.properties.Tipo + "<br><br>"
+                        + "A seguire sono rappresentate le rilevazioni medie giornaliere della stazione.<br><br><br></div>"
+                + "<div id='tipNumber'></div> <div id='tipBar'></div> <div id='tipPie'></div><br>" ;
+			});
+
+  svg.call(tip)
+    
+  var stazioni = topojson.feature(roma, roma.objects.stazioni).features
+  console.log(stazioni)
+  svg.selectAll('stazione')
+    .data(stazioni)
+    .enter()
+    .append('circle')
+    .attr("cx", function (d) {return projection(d.geometry.coordinates)[0]})
+    .attr("cy", function (d) {return projection(d.geometry.coordinates)[1]})
+    .attr('r', '0px')
+    .style('fill', function (d) {return d.properties.livelloInq})
+    .on('mouseover', function (d,i) {tip.show(d)
+                                    
+                                    d3.select(this)
+                                     .attr('class', 'stazione mouseon')
+                                     .attr('r', '7px')
+                                    
+                                    var dati = JSON.parse(d.properties.valoreInqu)
+                                    var colors = ['red', 'DarkRed', 'orange', 'gold', 'green', 'DeepSkyBlue', 'DarkSlateBlue',
+                                                  'DarkOrchid', 'DeepPink']
+                                    
+                                    
+                                    var vis = d3.select("#tipNumber").append("svg")
+                                    var pi = Math.PI;
+
+                                    var arc = d3.svg.arc()
+                                        .innerRadius(20)
+                                        .outerRadius(30)
+                                        .startAngle(-90 * (pi/180)) //converting from degs to radians
+                                        .endAngle(90 * (pi/180)) //just radians
+                                    
+                                    var arc2 = d3.svg.arc()
+                                                    .innerRadius(10)
+                                                    .outerRadius(20)
+                                                    .startAngle(-90 * (pi/180)) //converting from degs to radians
+                                                    .endAngle(-30 * (pi/180))
+
+                                    vis.attr("width", "100").attr("height", "100") // Added height and width so arc is visible
+                                        .append("path")
+                                        .attr("d", arc)
+                                        .attr("fill", "purple")
+                                        .attr("transform", "translate(50,50)");
+
+                                    vis.append("path")
+                                        .attr("d", arc2)
+                                        .attr("fill", "green")
+                                        .attr("transform", "translate(50,50)");
+                                     
+                                    vis.append("text")
+                                        .text("10")
+                                        .attr("transform", "translate(45,50)");
+
+
+                                    
+                                    
+                                    var tipSVGBar = d3.select("#tipBar")
+                                                    .append("svg")
+                                                    .attr("width", 150)
+                                                    .attr("height", 50 * 2)
+                                    var x = d3.scale.linear()
+                                                .domain([0, d3.max(dati)])
+                                                .range([0, 15]);
+                                    
+                                    var bar = tipSVGBar.selectAll("g")
+                                                    .data(dati)
+                                                    .enter().append("g")
+                                                    .attr("transform", function(d, i)
+                                                    {
+                                                        return "translate(0," + i * 6 + ")";
+                                                    })
+                                    
+                                    bar.append("rect")
+                                        .attr("width", 0)
+                                        //.attr("height", bar)
+                                        
+                                        .transition()
+                                        .duration(1000)
+                                                    .attr("width", function (d) {return d})
+                                                    .attr("height", 5)
+                                                    .attr("fill", function(d,i){return colors[i]});
+                                    
+                                    var w = 100;
+                                    var h = 50;
+                                    var r = h/2;
+                                    var aColor = [
+                                        'green',
+                                        'Gold',
+                                        'orange',
+                                        'red',
+                                        'purple'
+                                    ]
+                                    var data = [
+                                        {"label":"Colorectale levermetastase (n=336)", "value":74}, 
+                                        {"label": "Primaire maligne levertumor (n=56)", "value":12},
+                                        {"label":"Levensmetatase van andere origine (n=32)", "value":7}, 
+                                        {"label":"Beningne levertumor (n=34)", "value":7}
+                                    ];
+                                    
+                                    var vis = d3.select('#tipPie').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+                                     
+                                    var pie = d3.layout.pie().value(function(d){return d.value;});
+                                    // Declare an arc generator function
+                                    var arc = d3.svg.arc().outerRadius(r); 
+                                     
+                                    var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+                                    arcs.append("svg:path")
+                                        .attr("fill", function(d, i){return aColor[i];})
+                                        .attr("d", function (d) {return arc(d);});
+                                    
+                                    /* Add the text
+                                    arcs.append("svg:text")
+                                        .attr("transform", function(d){
+                                            d.innerRadius = 100; // Distance of label to the center
+                                            d.outerRadius = r;
+                                            return "translate(" + arc.centroid(d) + ")";}
+                                        )
+                                        .attr("text-anchor", "middle")
+                                        .text( function(d, i) {return data[i].value + '%';})
+                                    ;*/
+                                     
+                                    })
+    
+      .on('mouseout', function (d,i) {tip.hide(d);
+                                    d3.select(this)
+                                      .classed('mouseon', false)
+                                      .attr('r','5px')})
+    .transition()
+    .duration(2000)
+    .attr('r', '5px')
+    .attr("class", "stazione");
+    
+  svg.selectAll(".circorscrizioni-label")
+    .data(subunits)
+    .enter()
+    .append("text")
+    .attr("class", "stazione-label")
+    .transition()
+    .duration(2000)
+    .attr("transform", function(d) { return "translate(" + projection(path.centroid(d)) + ")"; })
+    .attr("dy", ".65em")
+    .attr("dx", ".65em")
+    .text(function(d) { return d.properties.DEN_CIRCOS; });
+});
+    
+  
+    
+
+</script>
+
+</body>
+</html>
