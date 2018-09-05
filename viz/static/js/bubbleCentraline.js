@@ -13,7 +13,7 @@ d3.select("#bubble-container")
     .enter()
     .append("g")
     .attr("class", "overallG")
-    .attr("transform", function (d,i) {return "translate(" + (i * sizeScale(maxSize) * 2) + ", 10)"});
+    .attr("transform", function (d,i) {return "translate(" + (i * sizeScale(maxSize) * 3 + 50) + ", 10)"});
 
   var centralina = d3.selectAll("g.overallG");
 
@@ -29,10 +29,10 @@ d3.select("#bubble-container")
   centralina
     .append("text")
     .style("text-anchor", "middle")
-    .attr("y", sizeScale(maxSize))
+    .attr("y", sizeScale(maxSize) +10)
     .attr('x', sizeScale(maxSize)*2)
     .attr('transform', 'rotate(40)')
-    .style("font-size", "6px")
+    .style("font-size", "8px")
     .text(function(d) {return d.nome;});
 
 
@@ -74,21 +74,15 @@ function buttonSorting() {
     var sortCentraline = sorted_centraline.map(a => a.nome)
 
     centralina
-      .attr("transform", function (d,i) {return "translate(" + (i * sizeScale(maxSize) * 2) + ", 0)"})
+      .attr("transform", function (d,i) {return "translate(" + (i * sizeScale(maxSize) * 3 + 50) + ", 10)"})
       .transition()
       .delay(function(d,i) {return i * 100})
       .duration(500)
       .attr("transform",
             function (d,i) {
-                    return "translate(" + (sortCentraline.indexOf(d.nome) * sizeScale(maxSize) * 2) + ", 0)"});
+                    return "translate(" + (sortCentraline.indexOf(d.nome) * sizeScale(maxSize) * 3 + 50) + ", 10)"});
  };
 
 
 
 //});
-
-
-
-
-
-

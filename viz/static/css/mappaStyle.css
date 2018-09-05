@@ -42,6 +42,7 @@ text {
 /* Tooltip stazioni */
 
 .d3-tip{
+    
     line-height: 1;
     font-weight: bold;
 	padding: 12px;
@@ -73,3 +74,4 @@ text {
 .tip-text {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 9px;}
+

@@ -12,11 +12,15 @@ body {margin: 0px;
     src: url('fonts/NotoSans-Regular.ttf') format('truetype');
 }
 /* Title and Layout #636363*/
+text {
+    font-family: FontRegular;
+}
+
 #header-style {
     background: #636363;
     position: relative;
     height: 80px;
-
+    z-index: 2;
 }
 
 .formAnno {
@@ -59,6 +63,7 @@ a.home:hover{
     color: white;
     font-family: FontRegular;
     font-size: 12px;
+    
 }
 
 
@@ -309,12 +314,13 @@ a.home:hover{
 }
 
 /* SVG bubbles centraline */
+
 #bubble-container {
     width: 700px;
     position: absolute;
     top: 0;
-    left: 470px; /* che è la larghezza del primo elemento */
-    margin-top: 40px;
+    left: 470px; 
+    margin-top: 40px;  
 }
 
 .svg-bubbles {

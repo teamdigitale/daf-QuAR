@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
     <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
@@ -120,10 +121,12 @@
 /* JavaScript goes here. */
 var width = 1400;
 var height = 600;
+var scale0 = width*15;
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
-    .attr("height", height);    
+    .attr("height", height);   
+
     
     
 d3.json("output-topo.json", function(error, roma) {
@@ -142,6 +145,7 @@ d3.json("output-topo.json", function(error, roma) {
                                     .translate(offset);
   // create the path
   var path = d3.geo.path().projection(projection);
+    
   
   // using the path determine the bounds of the current map and use 
   // these to determine better values for the scale and translation
@@ -158,6 +162,30 @@ d3.json("output-topo.json", function(error, roma) {
   path = path.projection(projection);
   
   
+  // Zooming
+  var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
+  
+  svg
+    .call(zoom)
+    .call(zoom.event);   
+    
+  /* Utils */
+/*function zoomed() {
+  projection
+      .translate(zoom.translate())
+      .scale(zoom.scale());
+
+  svg.selectAll("path")
+      .attr("d", path);
+}  */
+    
+  function zoomed() {
+  svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+    
+    
   svg.selectAll(".italy")
      .data(italia.features)
      .enter().append("path")
@@ -231,16 +259,16 @@ d3.json("output-topo.json", function(error, roma) {
                                         .append("path")
                                         .attr("d", arc)
                                         .attr("fill", "purple")
-                                        .attr("transform", "translate(50,50)");
+                                        .attr("transform", "translate(80,50)");
 
                                     vis.append("path")
                                         .attr("d", arc2)
                                         .attr("fill", "green")
-                                        .attr("transform", "translate(50,50)");
+                                        .attr("transform", "translate(80,50)");
                                      
                                     vis.append("text")
                                         .text("10")
-                                        .attr("transform", "translate(45,50)");
+                                        .attr("transform", "translate(75,50)");
 
 
                                     
@@ -252,13 +280,17 @@ d3.json("output-topo.json", function(error, roma) {
                                     var x = d3.scale.linear()
                                                 .domain([0, d3.max(dati)])
                                                 .range([0, 15]);
+                                     
+                                    var y = d3.scale.ordinal()
+                                                .rangeRoundBands([50 * 2, 0], .3, .3);
+                                     
                                     
                                     var bar = tipSVGBar.selectAll("g")
                                                     .data(dati)
                                                     .enter().append("g")
                                                     .attr("transform", function(d, i)
                                                     {
-                                                        return "translate(0," + i * 6 + ")";
+                                                        return "translate(0," + i * 10 + ")";
                                                     })
                                     
                                     bar.append("rect")
@@ -267,9 +299,18 @@ d3.json("output-topo.json", function(error, roma) {
                                         
                                         .transition()
                                         .duration(1000)
-                                                    .attr("width", function (d) {return d})
-                                                    .attr("height", 5)
+                                                    .attr("width", function (d) {return d.v})
+                                                    .attr("height", 7)
                                                     .attr("fill", function(d,i){return colors[i]});
+                                     
+                                    bar.append("text")
+                                          .attr("x", function (d) {return 0} )
+                                          .attr("y", function(d,i) { return 5.5 ; })
+                                          .text(function(d) { return d.n; })
+                                          .style('font-size', '6px')
+                                          .transition()
+                                          .duration(1000)
+                                          .attr('x', function (d) {return d.v + 5});
                                     
                                     var w = 100;
                                     var h = 50;
@@ -335,7 +376,7 @@ d3.json("output-topo.json", function(error, roma) {
 });
     
   
-    
+ 
 
 </script>
 

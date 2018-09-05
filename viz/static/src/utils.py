@@ -37,34 +37,53 @@ agenti_format = [
           'agente': 'NO',
           'mediaCentraline': 40}]
 
+def year_average(df, inquinante, limite):
+    df_media_1 = (df[df['inquinante']==inquinante].groupby('anno').mean()/limite*100).T
+    df_media_1.drop(['ora'], inplace=True)
+    df_media_1.columns = ['2018']
+    
+    return df_media_1
 
+def hour_average(df, inquinante, limite):
+    df_media_2 = pd.DataFrame(df[df['inquinante']==inquinante].mean()/limite*100)
+    df_media_2.drop(['anno','ora'], inplace=True)
+    df_media_2.columns = ['2018']
+    
+    return df_media_2
+
+def daily_average(df, inquinante, limite):
+    df_media_4 = pd.DataFrame((df[df['inquinante']==inquinante]
+                               .sort_values('data_ora')
+                               .groupby([pd.to_datetime(df['data_ora']).dt.date])
+                               .mean()/limite*100).mean())
+    df_media_4.drop(['anno','ora'], inplace=True)
+    df_media_4.columns = ['2018']
+    
+    return df_media_4
 
 def bubble_data(df, anno):
-	"""Returns the file name to be read by the html"""
+    """Returns the file name to be read by the html"""
 
-	# Subselect the df (it will be the API response)
-	df_selected = df[df['Anno'] == int(anno)]
+    df_total_average = pd.DataFrame([year_average(df, 'BENZENE', 5)['2018'],
+              hour_average(df, 'O3', 180)['2018'],
+              hour_average(df, 'NO2', 200)['2018'],
+              daily_average(df, 'PM10', 50)['2018'], 
+             year_average(df, 'PM2.5', 25)['2018']]).mean(skipna=True)
 
-	# Ottieni la somma giornaliera di agenti rilevati
-	df_somma_giornaliera = df_selected.groupby(
-		[pd.to_datetime(df_selected['Date']).dt.date]).sum()
-	# Ottieni la media annuale
-	df_media_annuale_totale_giornaliero = df_somma_giornaliera.mean()
+    data_bubbles = []
+    for centralina, valore in df_total_average.iteritems():
+        data_bubbles += [{'nome': centralina,
+                          'size': valore}]
 
-	lista_centraline = df_media_annuale_totale_giornaliero.index[2:-1:]
-	lista_valori = df_media_annuale_totale_giornaliero.values[2:-1:]
-
-	data_bubbles = []
-	for centralina, valore in zip(lista_centraline, lista_valori):
-		data_bubbles += [{'nome': centralina,
-						  'size': valore}]
-
-	with open('static/data/default_bubble_' + str(anno) + '.js', 'w') as f:
-		f.write('var centraline = ')
-		f.write(str(data_bubbles) + '\n')
+    with open('static/data/default_bubble_' + str(anno) + '.js', 'w') as f:
+        f.write('var centraline = ')
+        f.write(str(data_bubbles) + '\n')
 
 
-	return df_selected, 'data/default_bubble_' + str(anno) + '.js', lista_centraline
+    return df, 'data/default_bubble_' + str(anno) + '.js', df_total_average.index
+
+
+
 
 
 def radar_data(df_selected, agenti, anno, lista_centraline):
