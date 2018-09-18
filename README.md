@@ -9,7 +9,7 @@ __@TODO__: inserire la ToC
 ## Pipeline [IT]
 La figura seguente mostra il funzionamento dell'app in back end.
 
-![alt text](img/pipiline_quar.pdf)
+![alt text](img/pipiline_quar.png)
 
 ## Dati [IT]
 Per ogni giorno dell'anno, a partire dal 1999, ARPA mette a disposizione le rilevazioni orarie delle stazioni per il controllo della qualità dell'aria situate a Roma. I dati sono forniti per 9 agenti chimici (o inquinanti). Per l'applicazione di pone l'attenzione su cinque di essi in quanto, solo per loro sono disponibili i valori limiti utili al calcolo dell'indice di qualità dell'aria. Gli inquinanti di interesse sono:
