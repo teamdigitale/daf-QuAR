@@ -5,38 +5,15 @@ from flask import redirect, url_for
 
 
 import ast
-import sys
 import json
 import datetime
-# import argparse
 import numpy as np
 import pandas as pd
 from collections import defaultdict
 
-# Handle CLI commands
-# parser = argparse.ArgumentParser(description='Execute the server to run QuAR application')
-# parser.add_argument('--user',
-#                    help='user registered in DAF',
-#                    required=True)
-# parser.add_argument('--psw',
-#                    help="""password of the user""",
-#                    required=True)
-# args = parser.parse_args()    
 
-
-user = sys.argv[1]
-psw = sys.argv[2]
-endpoint = sys.argv[3]
-
-# Get the credentials from a txt file
-with open('static/data/auth/credential.txt', 'w') as f:
-    write_user = f.write(user + ' ')
-    write_psw = f.write(psw + ' ')
-    write_API = f.write(endpoint)
-
-
-
-import static.src.utils
+#import static.src.utils
+import static.src.write_credentials
 from static.src.utils import agenti_format,\
                              dizionario_limite, agenti,\
                              centraline, method_index,\
@@ -46,7 +23,6 @@ from static.src.plot_utils import bubble_data, radar_data,\
     
 
     
-
 app = Flask(__name__,
 			template_folder='templates/',
 			static_folder='static/',
