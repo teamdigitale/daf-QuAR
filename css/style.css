@@ -1,7 +1,0 @@
-g.overallG > circle{
-    stroke: blue
-}
-
-g.overallG.active {
-fill: blue;
-}
