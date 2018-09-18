@@ -100,7 +100,7 @@ $ pip install requirements.txt
 Una volta verificati i requisiti:
 
 ```
-$ python server.py --user <your_DAF_user> --psw <your_DAF_psw>
+$ python server.py <your_DAF_user> <your_DAF_psw> <daf_API_endpoint>
 ```
 
 Once the server is ready open the page `0.0.0.0:5000` sul tuo browser.

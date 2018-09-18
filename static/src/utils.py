@@ -73,6 +73,7 @@ with open('static/data/auth/credential.txt') as f:
     
 # Do the request
 # Do the request
+
 check = False
 while check == False:
     try:
