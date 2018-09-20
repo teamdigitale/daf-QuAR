@@ -5,3 +5,4 @@ geopy==1.12.0
 numpy==1.14.3
 npm==0.1.1
 Shapely==1.6.4.post1
+requests
