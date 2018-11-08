@@ -278,7 +278,7 @@ d3.json("data/mappa/output-topo.json", function(error, roma) {
                                     var w = 100;
                                     var h = 50;
                                     var r = h/2;
-                                    var aColor = [
+                                    var aColor = ['Aqua',
                                         'green',
                                         'Gold',
                                         'orange',
@@ -333,11 +333,12 @@ d3.json("data/mappa/output-topo.json", function(error, roma) {
                                         .duration(1000)
                                                     .attr("width", function (d) {return d.v})
                                                     .attr("height", 7)
-                                                    .attr("fill", function(d,i){if (d.v <= 50) {return 'green'}
-                                                                                else if (51 <= d.v <= 100) {return 'gold'}
-                                                                                else if (101 <= d.v <= 150) {return 'orange'}
-                                                                                else if (151 <= d.v <= 200) {return 'red'}
-                                                                                else if (201 <= d.v <= 300) {return 'purple'}
+                                                    .attr("fill", function(d,i){if (d.v <= 50) {return 'Aqua'}
+                                                                                else if (50 < d.v <= 75) {return 'green'}
+                                                                                else if (75 < d.v <= 100) {return 'gold'}
+                                                                                else if (100 < d.v <= 150) {return 'orange'}
+                                                                                else if (150 < d.v <= 200) {return 'red'}
+                                                                                else if (d.v > 200) {return 'purple'}
                                                                                });
                                      
                                     bar.append("text")
@@ -371,6 +372,102 @@ d3.json("data/mappa/output-topo.json", function(error, roma) {
     .attr("dy", ".65em")
     .attr("dx", ".65em")
     .text(function(d) { return d.properties.DEN_CIRCOS; });
+
+
+
+  var data__ = [{
+                "name": "Vivibile",
+                "value": 2,
+                "colore":'Aqua'
+        },
+            {
+                "name": "Buono",
+                "value": 2,
+                "colore":'green'
+        },
+            {
+                "name": "Non buono",
+                "value": 2,
+                "colore":'Gold'
+        },
+            {
+                "name": "Male",
+                "value": 2,
+                "colore":'orange'
+        },
+            {
+                "name": "Malissimo",
+                "value": 2,
+                "colore":'red'
+        },
+            {
+                "name": "Male male",
+                "value": 2,
+                "colore":'purple'
+        }];
+
+
+
+
+
+        var x___ = d3.scale.linear()
+            .range([0, 10])
+            .domain([0, 10]);
+
+        var y___ = d3.scale.ordinal()
+        	.range([0, 10])
+            .domain([0,10]);
+
+
+        //make y axis to show bar names
+        var yAxis = d3.svg.axis()
+            .scale(y___)
+            //no tick marks
+            .tickSize(0)
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+        var bars = svg.selectAll(".bar")
+            .data(data__)
+            .enter()
+            .append("g")
+
+        //append rects
+        bars.append("rect")
+            .attr("class", "bar")
+            .attr("y", function (d,i) {
+                return 300 + y___(d.value) + 10*((i+1)*5) / 2 -5;
+            })
+            .attr("height", function (d,i) {return 10})
+            .attr("x", 300+80)
+            .attr("width", function (d) {
+                return 10;
+            })
+            .style('fill', function (d){return d.colore})
+            .attr('class', 'legend-map');
+
+        //add a value label to the right of each bar
+        bars.append("text")
+            .attr("class", "label")
+            //y position of the label is halfway down the bar
+            .attr("y", function (d, i) {
+                return 300 + y___(d.value) + 10*((i+1)*5) / 2 + 4;
+            })
+            //x position is 3 pixels to the right of the bar
+            .attr("x", function (d) {
+                return 300+10 + 3;
+            })
+            .text(function (d) {
+                return d.name;
+            });
+
+
+
+
+
 });
     
   

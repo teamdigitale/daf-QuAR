@@ -25,31 +25,50 @@ def color_bubbles(df, anno, dizionario_limite, method_index, centraline, inq_obj
                       method_index['PM2.5']).average(df, anno)
     PM25.columns = ['PM2.5']
 
-    O3 = pd.DataFrame({'O3': inq_objects['O3'].pollutant_dataframe(df)\
-                                              .sort_values('data_ora')\
-                                               .iloc[-1]}).T[centraline]
-
-    NO2 = pd.DataFrame({'NO2': inq_objects['NO2'].pollutant_dataframe(df)\
-                                              .sort_values('data_ora')\
-                                              .iloc[-1]}).T[centraline]
+    O3 = Inquinante('O3', 
+                    dizionario_limite['O3'],
+                    method_index['O3']).average(df, anno)
+    
+    O3.columns = ['O3']
+    #O3 = pd.DataFrame({'O3': inq_objects['O3'].#pollutant_dataframe(df)\
+                                              #.sort_values('data_ora')\
+                                              # .iloc[-1]}).T[centraline]
+    
+    
+    NO2 = Inquinante('NO2', 
+                    dizionario_limite['NO2'],
+                    method_index['NO2']).average(df, anno)
+    
+    NO2.columns = ['NO2']
+    #NO2 = pd.DataFrame({'NO2': inq_objects['NO2'].pollutant_dataframe(df)\
+    #                                          .sort_values('data_ora')\
+    #                                          .iloc[-1]}).T[centraline]
+    
 
     PM10 = pd.DataFrame({'PM10': inq_objects['PM10'].pollutant_dataframe(df)\
                                                                  .sort_values('data_ora')\
                                                                  .iloc[-24:][centraline].mean()}).T
 
+
+
     # Set the df
     # Colore pallette
-    df_colori = pd.DataFrame(pd.concat([BENZENE.T, 
+    df_colori = pd.DataFrame(pd.concat([BENZENE.T,
                                         PM25.T,
-                                        O3,
-                                        NO2,
+                                        O3.T,
+                                        NO2.T,
                                         PM10]).max())
+
+
+
+
     df_colori['colori'] = df_colori[0].apply(colore_centralina)
     # Data viz
     colori_dict = {i:df_colori['colori'][i] for i in df_colori['colori'].index}
     valori_dict = {i:df_colori[0][i] for i in df_colori[0].index}
+    print(df_colori)
 
-    return colori_dict, valori_dict, [BENZENE.T, PM25.T, O3, NO2, PM10]
+    return colori_dict, valori_dict, [BENZENE.T, PM25.T, O3.T, NO2.T, PM10]
 
 
 def bar_plot(list_df, centraline):
@@ -57,9 +76,11 @@ def bar_plot(list_df, centraline):
     :list_df:
     :centraline:
     """
-    
+
+
     # Bar plot
-    df_bar = pd.DataFrame(pd.concat(list_df)).fillna(0)
+    df_bar = pd.DataFrame(pd.concat(list_df, axis=0)).fillna(0)
+    print(df_bar)
     dizInquinanti = {"0": "BENZENE",
                      "1": "NO2",
                      "2": "PM10",
@@ -71,6 +92,7 @@ def bar_plot(list_df, centraline):
     for a in centraline:
         list_dict_bar = []
         for row in df_bar[a].index:
+
             list_dict_bar += [{"n":dizInquinantiInve[row], "v": round(df_bar[a][row],1)}]
         # Formatting for Javascript
         list_bars[a] = [str(list_dict_bar).replace("'", '"')]

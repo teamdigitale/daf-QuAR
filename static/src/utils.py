@@ -102,6 +102,8 @@ colori_dict, valori_dict, list_df = color_bubbles(df, current_year, \
                                                   centraline, \
                                                   inq_objects)
 
+
+
 # Bar plot data
 list_bars = bar_plot(list_df, centraline)
 # Pie data

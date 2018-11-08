@@ -92,3 +92,7 @@ text {
     width: 120px;
 }
 
+.legend-map {
+    position: fixed;
+
+}

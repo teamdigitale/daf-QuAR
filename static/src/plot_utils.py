@@ -11,17 +11,17 @@ from static.src.inquinanti import Inquinante
 
 def colore_centralina(x):
     if x <= 50:
+        return 'Aqua'
+    elif 50 < x <= 75:
         return 'green'
-    elif 51 <= x <= 100:
+    elif 75 < x <= 100:
         return 'gold'
-    elif 101 <= x <= 150:
+    elif 100 < x <= 150:
         return 'orange'
-    elif 151 <= x <= 200:
+    elif 150 < x <= 200:
         return 'red'
-    elif 201 <= x <= 300:
+    elif x > 200:
         return 'purple'
-    elif x >= 301:
-        return 'violet'
 
 def circlePoints(x, r, cx, cy):
     """Ther dunction returns the y coordinate of a 
