@@ -6,7 +6,7 @@ svg_2 = d3.select("#line-container")
 
 lenX = 500
 lenY = 270
-color = ["Aqua","Aquamarine","Azure","Beige","Bisque"]//[ "#7fcdbb", "#41b6c4", "#1d91c0"]
+color = ["NAVY","TEAL","OLIVE","GREEN","LIME"]//[ "#7fcdbb", "#41b6c4", "#1d91c0"]
 
 function dataArray(data) {
     arr = new Array()
@@ -16,10 +16,12 @@ function dataArray(data) {
     return arr
 }
 function retweetArray_(data) {
+    inquinanti = ['PM25', 'BENZENE']
     arr = new Array()
     for (i = 0; i < data.length; i++){
-        arr[i] = parseInt(data[i].PM25)
-    }
+        for (j = 0; j < inquinanti.length; j++){
+            arr.push(parseInt(data[i][inquinanti[j]]) + 10)
+    }}
     return arr
 }
 
@@ -143,7 +145,7 @@ d3.csv('data/linee.csv')
   /*for (i = 0; i < arrayCampi.length; i++){
         createLinea(data, arrayCampi[i], color[i])
     }*/
-createLineaLimite(data, 50, 'green')
+//createLineaLimite(data, 50, 'aqua')
 })
 
 
@@ -169,7 +171,7 @@ function createLineaLimite(data, limite, colore){
         .attr("fill", "none")
         .attr("stroke", colore)
         .attr("stroke-width", 1)
-        .attr('opacity', 0.6)
+        .attr('opacity', 0.3)
 
 
 };
@@ -195,6 +197,7 @@ function createLinea(data, campo, colore){
         .attr("fill", "none")
         .attr("stroke", colore)
         .attr("stroke-width", 2)
+        .attr('opacity', 0.5)
         .on('mouseover', function (d){d3.select('#linea'+campo)
                                         .attr('stroke','blue')
                                         .attr('stroke-width', '3px')})
@@ -212,6 +215,7 @@ function createLinea(data, campo, colore){
      .attr("cx", function(d) {return xScale(new Date(d.day))})
      .attr("cy", function(d) {return yScale(d[campo])})
      .style("fill", colore)
+     .attr('opacity', 0.2)
      .on('mouseover', overPoint)
      .on('mouseout', awayPoint)
      ;

@@ -69,6 +69,7 @@ class Inquinante(object):
         
         # Compute the mean over the df referring to the pullutter
         df_media = self.pollutant_dataframe(df).groupby('data_ora_time').max().ix[-1]
+
         #df_media = self.pollutant_dataframe(df).mean()            
         #df_std_media = pd.DataFrame(df_media/self.limit*100)
         
@@ -79,7 +80,7 @@ class Inquinante(object):
         
         # Give to the remaining columns the name of the year
         df_media = pd.DataFrame(df_media)
-        df_media.columns = ['2018']
+        df_media.columns = [anno]
         #df_media = pd.DataFrame(df_media, columns=[anno])
         #df_std_media.columns = [anno]
         

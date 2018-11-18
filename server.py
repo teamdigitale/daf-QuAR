@@ -55,11 +55,11 @@ def viz_temporale():
     inquinanti_objects = {inquinante: inq_objects[inquinante].average(df, anno)
                       for inquinante, method in method_index.items()}
     
-    print (inquinanti_objects['BENZENE'].columns)
+    #print (inquinanti_objects['BENZENE'][anno])
     
     nome = bubble_data(anno, inquinanti_objects)
     nome_radar = radar_data(centraline, agenti_format, inquinanti_objects)
-    nome_linee = linee_data(df, inq_objects)
+    nome_linee = linee_data(df, inq_objects, anno)
     
     return render_template('index.html')
     #return redirect(url_for('index.html'))

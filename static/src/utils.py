@@ -93,6 +93,7 @@ while check == False:
 inq_objects = {a: Inquinante(a, dizionario_limite[a], method_index[a]) 
                for a in agenti}
 
+print (inq_objects['BENZENE'])
 
 # Create the topojson for the map
 # Bubbles color

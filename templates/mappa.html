@@ -213,7 +213,7 @@ d3.json("data/mappa/output-topo.json", function(error, roma) {
     	    .html(function(d)
 			{ return "<div class='tip-text'>Stazione: " + d.properties.Nome + "<br><br>"
                         + "La stazione è di tipologia: "+ d.properties.Tipo + "<br><br>"
-                        + "A seguire sono rappresentate le rilevazioni medie giornaliere della stazione.<br><br><br></div>"
+                        + "A seguire sono rappresentate meggiori informazioni sulla stazione.<br><br><br></div>"
                 + "<div id='tipNumber'></div> <div id='tipBar'></div> <div id='tipPie'></div><br>" ;
 			});
 
@@ -238,10 +238,7 @@ d3.json("data/mappa/output-topo.json", function(error, roma) {
                                      .attr('r', '7px')
                                     
                                     var dati = JSON.parse(d.properties.valoreInqu)
-                                    var colors = ['red', 'DarkRed', 'orange', 'gold', 'green', 'DeepSkyBlue', 'DarkSlateBlue',
-                                                  'DarkOrchid', 'DeepPink']
-                                    
-                                    
+
                                     var vis = d3.select("#tipNumber").append("svg")
                                     var pi = Math.PI;
 
@@ -333,11 +330,11 @@ d3.json("data/mappa/output-topo.json", function(error, roma) {
                                         .duration(1000)
                                                     .attr("width", function (d) {return d.v})
                                                     .attr("height", 7)
-                                                    .attr("fill", function(d,i){if (d.v <= 50) {return 'Aqua'}
-                                                                                else if (50 < d.v <= 75) {return 'green'}
-                                                                                else if (75 < d.v <= 100) {return 'gold'}
-                                                                                else if (100 < d.v <= 150) {return 'orange'}
-                                                                                else if (150 < d.v <= 200) {return 'red'}
+                                                    .attr("fill", function(d){if (d.v <= 50) {return 'Aqua'}
+                                                                                else if (50 < d.v && d.v <= 75) {return 'green'}
+                                                                                else if (75 < d.v && d.v <= 100) {return 'gold'}
+                                                                                else if (100 < d.v && d.v <= 150) {return 'orange'}
+                                                                                else if (150 < d.v && d.v <= 200) {return 'red'}
                                                                                 else if (d.v > 200) {return 'purple'}
                                                                                });
                                      

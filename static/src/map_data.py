@@ -66,7 +66,7 @@ def color_bubbles(df, anno, dizionario_limite, method_index, centraline, inq_obj
     # Data viz
     colori_dict = {i:df_colori['colori'][i] for i in df_colori['colori'].index}
     valori_dict = {i:df_colori[0][i] for i in df_colori[0].index}
-    print(df_colori)
+    #print(df_colori)
 
     return colori_dict, valori_dict, [BENZENE.T, PM25.T, O3.T, NO2.T, PM10]
 
@@ -80,7 +80,7 @@ def bar_plot(list_df, centraline):
 
     # Bar plot
     df_bar = pd.DataFrame(pd.concat(list_df, axis=0)).fillna(0)
-    print(df_bar)
+    #print(df_bar)
     dizInquinanti = {"0": "BENZENE",
                      "1": "NO2",
                      "2": "PM10",
