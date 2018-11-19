@@ -1,7 +1,7 @@
 import sys
 import os
 
-
+##NEW
 user = os.environ['user']
 psw = os.environ['psw']
 endpoint = os.environ['API']
