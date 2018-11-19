@@ -19,7 +19,7 @@ RUN python3 -m pip install -r requirements.txt
 RUN npm install -g mapshaper
 
 #WORKDIR /daf-QuAR
-EXPOSE 80
+EXPOSE 5000
 
 CMD [ "python3", "./server.py" ]
 
