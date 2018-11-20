@@ -16,7 +16,7 @@ function dataArray(data) {
     return arr
 }
 function retweetArray_(data) {
-    inquinanti = ['PM25', 'BENZENE']
+    inquinanti = ['PM25', 'BENZENE', 'O3', 'PM10', 'NO2']
     arr = new Array()
     for (i = 0; i < data.length; i++){
         for (j = 0; j < inquinanti.length; j++){
